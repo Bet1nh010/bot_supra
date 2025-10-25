@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bot Supra</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+/* CSS é mantido inalterado */
+:root{
+  --bg:#06060a;
+  --accent:#00b85c;
+  --accent-2:#00d18f;
+  --muted:#a6a6a6;
+  --cta-text:#071017;
+  --glass: rgba(255,255,255,0.04);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+
+/* VÍDEO DE FUNDO */
+.video-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  opacity: 0.15;
+  display: block; 
+}
+
+body{
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(180deg,#05060a,#07101a);
+  color:#eaeef2;
+  line-height:1.5;
+  position: relative;
+}
+.container{width:90%; max-width:1300px; margin:0 auto;} 
+.topbar{
+  position:sticky; top:0; background:rgba(0,0,0,0.3); padding:10px 18px; display:flex; justify-content:space-between; align-items:center; z-index:1000; backdrop-filter: blur(6px);
+  animation: neonPulse 1.2s infinite alternate;
+}
+@keyframes neonPulse {
+  0% {text-shadow: 0 0 5px var(--accent), 0 0 10px var(--accent-2);}
+  50% {text-shadow: 0 0 15px var(--accent), 0 0 20px var(--accent-2);}
+  100% {text-shadow: 0 0 5px var(--accent), 0 0 10px var(--accent-2);}
+}
+.badge{background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:var(--cta-text); padding:6px 10px; border-radius:999px; font-weight:700;}
+.timer-small{color:var(--accent); font-weight:600;}
+
+/* DESKTOP: Aumento do padding vertical e largura */
+.hero{padding:80px 0 100px; display:flex; justify-content:center; align-items:center;}
+.hero-inner{display:grid; grid-template-columns:1fr 650px; gap:60px; align-items:center;} 
+
+.hero-copy h1{
+    font-size: 3.5rem;
+    margin-bottom: 10px;
+}
+@media (max-width: 980px){ 
+  .hero-inner{grid-template-columns:1fr;}
+  .hero-copy h1{
+        font-size: 2.5rem;
+    }
+}
+
+/* OTIMIZAÇÃO FINAL PARA CELULAR: Puxando o cabeçalho para o topo (MÁXIMA REDUÇÃO) */
+@media (max-width: 600px) {
+    .hero{
+        /* Zera o padding do hero para eliminar vazios */
+        padding: 0; 
+    }
+    .hero-inner {
+        gap: 20px; /* Reduz o espaçamento entre o texto e o vídeo */
+    }
+    .hero-copy {
+        margin-bottom: 0; /* NOVO: Remove margem extra na div do texto */
+    }
+    .hero-copy h1{
+        font-size: 2rem;
+        margin-top: 0; /* Tira a margem padrão do H1 */
+    }
+    .hero-copy p{
+        margin-bottom: 8px; /* Reduz a margem do parágrafo para aproximar o botão */
+    }
+    .video-card{
+        margin-bottom: 0; /* Tira a margem inferior do vídeo para aproximar o próximo conteúdo */
+    }
+}
+/* FIM OTIMIZAÇÃO MOBILE */
+
+.hero-copy p{color:var(--muted); margin-bottom:18px;}
+.price-line{margin-bottom:12px; font-size:1.6rem;}
+.price-line .old-price{text-decoration:line-through; color:var(--muted); margin-right:10px;}
+.price-line .new-price{color:var(--accent); font-weight:800;}
+.btn-cta{
+  background:linear-gradient(90deg,var(--accent),var(--accent-2));
+  color:var(--cta-text); padding:16px 30px; border-radius:10px; font-weight:800; border:none; cursor:pointer; text-decoration:none; display:inline-block; transition: transform .14s ease;
+  animation: pulseBtn 1.2s infinite alternate;
+}
+.btn-cta:hover{transform:translateY(-3px);}
+@keyframes pulseBtn {
+  0% {box-shadow: 0 0 8px var(--accent);}
+  50% {box-shadow: 0 0 16px var(--accent-2);}
+  100% {box-shadow: 0 0 8px var(--accent);}
+}
+
+.video-card{
+    position:relative; 
+    border-radius:14px; 
+    overflow:hidden; 
+    max-width:100%; 
+    margin-bottom:20px;
+    cursor: pointer;
+}
+.video-card img, .video-card video{width:100%; border-radius:14px;}
+
+.overlay-play{
+    position:absolute; 
+    inset:0; 
+    display:flex; 
+    justify-content:center; 
+    align-items:center; 
+    background: rgba(0,0,0,0.3);
+    transition: opacity 0.3s ease;
+}
+.video-card:hover .overlay-play {
+    opacity: 0.8;
+}
+
+/* ÍCONE DE PLAY CHAMATIVO */
+.overlay-play svg {
+    width: 90px;
+    height: 90px;
+    filter: drop-shadow(0 0 10px var(--accent));
+    animation: neonFlash 1.5s infinite alternate;
+    transition: transform 0.2s ease;
+}
+
+@keyframes neonFlash {
+    0% {
+        filter: drop-shadow(0 0 5px var(--accent));
+        transform: scale(1);
+    }
+    50% {
+        filter: drop-shadow(0 0 15px var(--accent-2)) drop-shadow(0 0 20px var(--accent));
+        transform: scale(1.05);
+    }
+    100% {
+        filter: drop-shadow(0 0 5px var(--accent));
+        transform: scale(1);
+    }
+}
+.video-card:hover .overlay-play svg {
+    transform: scale(1.1);
+}
+/* FIM ÍCONE DE PLAY CHAMATIVO */
+
+
+.section{padding:64px 0;}
+.sticky-cta{
+  position:fixed;
+  left:18px;
+  bottom:18px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  background:linear-gradient(90deg, rgba(0,0,0,0.36), rgba(0,0,0,0.2));
+  padding:10px;
+  border-radius:999px;
+  box-shadow:0 12px 40px rgba(0,0,0,0.6);
+  border:1px solid rgba(255,255,255,0.03);
+  animation: pulseBtn 1.2s infinite alternate;
+}
+
+.countdown{display:flex; gap:10px; font-weight:700; margin-top:10px;}
+.countdown .box{background:rgba(255,255,255,0.04); padding:10px 12px; border-radius:8px; color:var(--accent); min-width:50px; text-align:center;}
+footer{padding:28px 0; color:var(--muted); text-align:center; font-size:0.9rem; border-top:1px solid rgba(255,255,255,0.02);}
+
+/* CHATBOT E BALÃO DE AVISO (Estilos mantidos) */
+#chat-wrapper {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  z-index: 3000;
+}
+#chat-bubble {
+    position: absolute;
+    bottom: 70px;
+    right: 0;
+    background: var(--accent);
+    color: var(--cta-text);
+    padding: 8px 12px;
+    border-radius: 12px 12px 0 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    max-width: 180px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transform: translateX(10px);
+    animation: fadeInSlide 0.5s ease-out 2s forwards;
+}
+
+@keyframes fadeInSlide {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+#chat-toggle-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  color: var(--cta-text);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease;
+  animation: pulseBtn 1.2s infinite alternate;
+}
+#chat-toggle-btn:hover {transform: scale(1.05);}
+#chat-bot {
+  position: absolute;
+  bottom: 70px;
+  right: 0;
+  width: 300px;
+  max-width: 90vw;
+  background: rgba(0,0,0,0.92);
+  border-radius: 16px;
+  padding: 16px;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.7);
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  border: 1px solid rgba(0, 184, 92, 0.3);
+}
+#chat-bot h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+  color: var(--accent);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.chat-message {
+  background: rgba(255,255,255,0.08);
+  padding: 10px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+}
+.bot-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.bot-button {
+  background: var(--glass);
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--accent);
+  text-align: left;
+  transition: background 0.14s ease, transform 0.14s ease;
+  font-size: 0.9rem;
+}
+.bot-button:hover {
+  background: rgba(0, 184, 92, 0.1);
+  transform: translateY(-1px);
+}
+.bot-description {
+  background: rgba(0, 184, 92, 0.1);
+  color: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  display: none;
+  font-size: 0.85rem;
+  margin-top: 6px;
+}
+.close-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+}
+</style>
+</head>
+<body>
+
+<video autoplay loop muted class="video-background">
+  <source src="video/fundo.mp4" type="video/mp4">
+  Seu navegador não suporta vídeo.
+</video>
+
+
+<div class="topbar container">
+  <div class="badge">Oferta Especial</div>
+  <div class="timer-small" id="top-timer">01:00:00</div>
+</div>
+
+<div class="hero container">
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <h1>Bot Supra</h1>
+      <div class="price-line">
+        <span class="old-price">R$120</span>
+        <span class="new-price">Só hoje R$50 Anual</span>
+      </div>
+      <p>O Bot Supra leva a análise técnica para o nível avançado. Inclui todas as funcionalidades do Premium, adicionando identificação de figuras gráficas complexas como ombro-cabeça-ombro, triângulos de continuação e outros padrões de alta precisão.</p>
+      <a href="https://pay.hub.la/0z2LAC71y7XVLNY9Twlu?_gl=1*vxa219*_gcl_au*MTgwMjAwMjc3Mi4xNzYwNTAyNzc1&_path=/checkout/0z2LAC71y7XVLNY9Twlu" class="btn-cta">Quero Garantir por R$50 Anual</a>
+      <div class="countdown" id="hero-timer">
+        <div class="box" id="hours">00</div>
+        <div class="box" id="minutes">00</div>
+        <div class="box" id="seconds">00</div>
+      </div>
+    </div>
+    <div class="video-card" id="video-card-container">
+      <img id="video-poster" src="img/supra.jpg">
+      <video id="hero-video" style="display:none;" poster="img/supra.jpg" src="video/supra.mp4">
+        Seu navegador não suporta vídeo.
+      </video>
+      <div class="overlay-play" id="play-overlay">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#00b85c">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sticky-cta pulse">
+  <a href="https://pay.hub.la/0z2LAC71y7XVLNY9Twlu?_gl=1*vxa219*_gcl_au*MTgwMjAwMjc3Mi4xNzYwNTAyNzc1&_path=/checkout/0z2LAC71y7XVLNY9Twlu" class="btn-cta">Assinar Agora</a>
+</div>
+
+<footer>
+  © 2025 Bot Supra. Todos os direitos reservados.
+</footer>
+
+
+<div id="chat-wrapper">
+    <div id="chat-bubble">Conheça nossos outros bots!</div>
+    
+    <div id="chat-bot">
+      <h3>
+        Assistente
+        <button class="close-btn" onclick="toggleChat()">×</button>
+      </h3>
+      <div class="chat-message" id="chat-message"></div>
+      <div class="bot-buttons" id="bot-buttons"></div>
+    </div>
+
+    <button id="chat-toggle-btn">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+        </svg>
+    </button>
+</div>
+
+<script>
+// Play do vídeo e Contador regressivo 
+const videoCardContainer = document.getElementById('video-card-container');
+const poster = document.getElementById('video-poster');
+const video = document.getElementById('hero-video');
+const playOverlay = document.getElementById('play-overlay');
+
+// LÓGICA DO BOTÃO DE PLAY INTERATIVO
+videoCardContainer.addEventListener('click', () => {
+  if (video.paused || video.ended) {
+    poster.style.display = 'none';
+    playOverlay.style.display = 'none';
+    video.style.display = 'block';
+    video.play();
+  }
+});
+// Se o vídeo terminar, volta a exibir o poster e o botão de play
+video.addEventListener('ended', () => {
+    video.style.display = 'none';
+    poster.style.display = 'block';
+    playOverlay.style.display = 'flex';
+});
+
+// Contador regressivo (Mantido)
+let endTime = new Date().getTime() + 60*60*1000;
+function updateTimer() {
+  let now = new Date().getTime();
+  let distance = endTime - now;
+  if(distance < 0) distance = 0;
+  let h = Math.floor((distance/(1000*60*60)) %24);
+  let m = Math.floor((distance/(1000*60)) %60);
+  let s = Math.floor((distance/1000)%60);
+  document.getElementById('hours').innerText = String(h).padStart(2,'0');
+  document.getElementById('minutes').innerText = String(m).padStart(2,'0');
+  document.getElementById('seconds').innerText = String(s).padStart(2,'0');
+  document.getElementById('top-timer').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+setInterval(updateTimer,1000);
+updateTimer();
+
+// ----------------------------------------------------------------------
+// LÓGICA DO CHATBOT (Valores e funcionalidade)
+// ----------------------------------------------------------------------
+// IMPORTANTE: MANTENHA ESTA LISTA DE BOTS IGUAL EM TODAS AS PÁGINAS (index, premium, supra, etc.)
+// Isso garante que o chatbot funcione e aponte para as páginas corretas.
+
+const chatPanel = document.getElementById('chat-bot');
+const chatToggleBtn = document.getElementById('chat-toggle-btn');
+const chatMessage = document.getElementById('chat-message');
+const buttonsContainer = document.getElementById('bot-buttons');
+const chatBubble = document.getElementById('chat-bubble');
+let hasBeenOpened = false;
+
+function toggleChat() {
+    if (chatPanel.style.display === "flex") {
+        chatPanel.style.display = "none";
+        chatToggleBtn.style.animation = "pulseBtn 1.2s infinite alternate";
+    } else {
+        chatPanel.style.display = "flex";
+        chatToggleBtn.style.animation = "none";
+        chatBubble.style.display = "none";
+        if (!hasBeenOpened) {
+            loadChatContent();
+            hasBeenOpened = true;
+        }
+    }
+}
+chatToggleBtn.addEventListener('click', toggleChat);
+
+function getGreeting() {
+  const hour = new Date().getHours();
+  if(hour >= 5 && hour < 12) return "Bom dia!";
+  if(hour >= 12 && hour < 18) return "Boa tarde!";
+  return "Boa noite!";
+}
+
+const bots = [
+  { name: "Sinais Binance", price: "R$10/Anual", description: "Monitora mais de 30 pares simultaneamente, envia alertas de RSI, EMA e força do mercado.", link: "index.html" },
+  { name: "Bot Premium", price: "R$30/Anual", description: "Tudo que o Sinais Binance faz, mais análise do MACD, identificação de figuras de candles e envio de sinais pelo Telegram.", link: "premium.html" }, 
+  { name: "Bot Supra", price: "R$50/Anual", description: "Tudo que o Premium faz, com adição de identificação de figuras gráficas avançadas como ombro-cabeça-ombro, triângulos e outros padrões.", link: "supra.html" },
+  { name: "Price Action", price: "R$70/Anual", description: "Focado exclusivamente em Price Action, ideal para traders que seguem padrões de movimento do mercado de forma precisa.", link: "price-action.html" },
+  { name: "Price Action Pro", price: "R$100/Anual", description: "Inteligente: identifica padrões de topo duplo, calcula stops estratégicos e sinaliza a melhor entrada. Ideal para traders experientes.", link: "price-action-pro.html" }
+];
+
+function loadChatContent() {
+  chatMessage.innerHTML = `${getGreeting()} Seja bem-vindo(a)! Se quiser conhecer nossa linha completa de bots com planos ANUAIS promocionais, é só clicar nas opções abaixo.`;
+
+  bots.forEach((bot) => {
+    const btnWrapper = document.createElement('div');
+    btnWrapper.style.display = "flex";
+    btnWrapper.style.flexDirection = "column";
+
+    const btn = document.createElement('button');
+    btn.className = "bot-button";
+    btn.innerHTML = `<strong>${bot.name}</strong> (${bot.price})`;
+
+    const desc = document.createElement('div');
+    desc.className = "bot-description";
+    
+    // Se o link for um arquivo HTML local, ele redireciona para a landing page.
+    desc.innerHTML = `${bot.description} <br><a href="${bot.link}" style="color:#00d18f; font-weight:700;">&rarr; Clique para Ver Detalhes</a>`;
+
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.bot-description').forEach(d => {
+        if(d !== desc) d.style.display = 'none';
+      });
+      desc.style.display = desc.style.display === 'block' ? 'none' : 'block';
+    });
+
+    btnWrapper.appendChild(btn);
+    btnWrapper.appendChild(desc);
+    buttonsContainer.appendChild(btnWrapper);
+  });
+}
+</script>
+
+</body>
+</html>
